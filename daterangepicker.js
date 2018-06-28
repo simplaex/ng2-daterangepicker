@@ -1236,7 +1236,7 @@
             // } else {
             //   this.renderRanges(this.dailyCalendarOptions.ranges, 'days');
             // }
-            this.renderRanges(newRanges, 'days');
+            this.renderRanges(newRanges, this.viewType);
 
 
             this.container.show();
