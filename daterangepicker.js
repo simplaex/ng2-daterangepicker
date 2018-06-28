@@ -582,7 +582,7 @@
 
                 // If the end of the range is before the minimum or the start of the range is
                 // after the maximum, don't display this range option at all.
-                if ((granularity === 'days' && minDate && end.isBefore(minDate, this.timepicker ? 'minute' : 'day'))
+                if ((granularity === 'days' && this.minDate && end.isBefore(this.minDate, this.timepicker ? 'minute' : 'day'))
                     || (granularity === 'days' && maxDate && start.isAfter(maxDate, this.timepicker ? 'minute' : 'day')))
                     continue;
 
