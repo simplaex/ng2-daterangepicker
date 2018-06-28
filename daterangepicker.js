@@ -704,7 +704,7 @@
                 this.renderCalendar('right');
             }
 
-            this.render
+            this.render;
 
             //highlight any predefined range matching the current start and end dates
             this.container.find('.ranges li').removeClass('active');
@@ -1372,7 +1372,7 @@
 
         clickPrev: function (e) {
             // since we don't handle this anymore
-            return;
+
 
             // var cal = $(e.target).parents('.calendar');
             // if (cal.hasClass('left')) {
@@ -1387,7 +1387,7 @@
 
         clickNext: function (e) {
             // since we don't handle this anymore
-            return;
+
 
             // var cal = $(e.target).parents('.calendar');
             // if (cal.hasClass('left')) {
@@ -1935,7 +1935,7 @@
             if (this.endMonth.isSameOrAfter(maxMonthToSelect, 'month')) {
                 this.endMonth = maxMonthToSelect.clone();
             } else if (this.endMonth.isSameOrBefore(this.startMonth, 'month')) {
-                this.endMonth = this.startMonth.clone();
+                this.endMonth = this.startMonth.clone().endOf('month');
             }
 
             this.renderMonthlyRanger();
