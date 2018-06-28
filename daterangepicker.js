@@ -568,9 +568,9 @@
 
                 // If the start or end date exceed those allowed by the minDate or dateLimit
                 // options, shorten the range to the allowable period.
-                var minDate = granularity === 'days' ? this.minDate : this.minMonth;
-                if (minDate && start.isBefore(minDate))
-                    start = minDate.clone();
+                if (granularity === 'days' && this.minDate && start.isBefore(this.minDate)) {
+                    start = this.minDate.clone();
+                }
 
                 if (granularity === 'days') {
                     var maxDate = this.maxDate;
@@ -704,7 +704,7 @@
                 this.renderCalendar('right');
             }
 
-            this.render
+            this.render;
 
             //highlight any predefined range matching the current start and end dates
             this.container.find('.ranges li').removeClass('active');
@@ -1236,7 +1236,7 @@
             // } else {
             //   this.renderRanges(this.dailyCalendarOptions.ranges, 'days');
             // }
-            this.renderRanges(newRanges, 'days');
+            this.renderRanges(newRanges, this.viewType);
 
 
             this.container.show();
@@ -1372,7 +1372,7 @@
 
         clickPrev: function (e) {
             // since we don't handle this anymore
-            return;
+
 
             // var cal = $(e.target).parents('.calendar');
             // if (cal.hasClass('left')) {
@@ -1387,7 +1387,7 @@
 
         clickNext: function (e) {
             // since we don't handle this anymore
-            return;
+
 
             // var cal = $(e.target).parents('.calendar');
             // if (cal.hasClass('left')) {
@@ -1935,7 +1935,7 @@
             if (this.endMonth.isSameOrAfter(maxMonthToSelect, 'month')) {
                 this.endMonth = maxMonthToSelect.clone();
             } else if (this.endMonth.isSameOrBefore(this.startMonth, 'month')) {
-                this.endMonth = this.startMonth.clone();
+                this.endMonth = this.startMonth.clone().endOf('month');
             }
 
             this.renderMonthlyRanger();
