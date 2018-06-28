@@ -568,9 +568,9 @@
 
                 // If the start or end date exceed those allowed by the minDate or dateLimit
                 // options, shorten the range to the allowable period.
-                var minDate = granularity === 'days' ? this.minDate : this.minMonth;
-                if (minDate && start.isBefore(minDate))
-                    start = minDate.clone();
+                if (granularity === 'days' && this.minDate && start.isBefore(this.minDate)) {
+                    start = this.minDate.clone();
+                }
 
                 if (granularity === 'days') {
                     var maxDate = this.maxDate;
