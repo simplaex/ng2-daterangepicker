@@ -557,12 +557,12 @@
                 if (typeof ranges[range][0] === 'string')
                     start = moment(ranges[range][0], this.locale.format);
                 else
-                    start = ranges[range][0]
+                    start = ranges[range][0];
 
                 if (typeof ranges[range][1] === 'string')
                     end = moment(ranges[range][1], this.locale.format);
                 else
-                    end = ranges[range][1]
+                    end = ranges[range][1];
 
                 // If the start or end date exceed those allowed by the minDate or dateLimit
                 // options, shorten the range to the allowable period.
@@ -916,7 +916,10 @@
                             classes.push('active', 'end-date');
 
                         //highlight dates in-between the selected dates
-                        if (this.endDate != null && calendar[row][col] > this.startDate && calendar[row][col] < this.endDate) {
+                        if (
+                            this.endDate != null
+                            && moment(calendar[row][col].format('YYYY-MM-DD')).isBetween(this.startDate.format('YYYY-MM-DD'), this.endDate.format('YYYY-MM-DD'), 'day', '[]')
+                        ) {
                             classes.push('in-range');
                         }
                     }
@@ -1521,7 +1524,7 @@
                     }
                 } else {
                     //ignore times when comparing dates if time picker is not enabled
-                    if (startDate.format('YYYY-MM-DD') == this.ranges[range][0] && this.endDate == this.ranges[range][1]) {
+                    if (startDate && startDate.format('YYYY-MM-DD') === this.ranges[range][0] && this.endDate === this.ranges[range][1]) {
                         customRange = false;
                         this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
                         break;
