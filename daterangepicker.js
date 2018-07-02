@@ -214,8 +214,10 @@
         }
 
         if (options.dailyCalendar) {
-            this.startDate = options.startDate ? moment(options.startDate) : null;
-            this.endDate = options.endDate ? moment(options.endDate) : null;
+            if (options.granularity === 'days') {
+                this.startDate = options.startDate ? moment(options.startDate) : null;
+                this.endDate = options.endDate ? moment(options.endDate) : null;
+            }
             this.minDate = options.dailyCalendar.minDate ? moment(options.dailyCalendar.minDate) : null;
             this.dailyCalendarOptions = options.dailyCalendar;
         }
@@ -474,6 +476,10 @@
         constructor: DateRangePicker,
 
         setStartDate: function (startDate) {
+            if (this.viewType === 'months') {
+                return;
+            }
+
             if (typeof startDate === 'string')
                 this.startDate = moment(startDate, this.locale.format);
 
@@ -505,6 +511,10 @@
         },
 
         setEndDate: function (endDate) {
+            if (this.viewType === 'months') {
+                return;
+            }
+
             if (typeof endDate === 'string')
                 this.endDate = moment(endDate, this.locale.format);
 
@@ -629,6 +639,12 @@
         },
 
         updateMonthsInView: function () {
+            if (this.maxDate && this.granularity === 'months') {
+                this.rightCalendar.month = this.maxDate.clone().date(2);
+                this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month');
+                return;
+            }
+
             if (this.endDate) {
                 //if both dates are visible already, do nothing
                 if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month &&
@@ -651,7 +667,11 @@
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
             } else {
-                if (this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
+                if (
+                    this.startDate
+                    && this.leftCalendar.month.format('YYYY-MM') !== this.startDate.format('YYYY-MM')
+                    && this.rightCalendar.month.format('YYYY-MM') !== this.startDate.format('YYYY-MM')
+                ) {
                     this.leftCalendar.month = this.startDate.clone().date(2);
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
@@ -1120,11 +1140,23 @@
             if (this.container.find('input[name=daterangepicker_start]').is(":focus") || this.container.find('input[name=daterangepicker_end]').is(":focus"))
                 return;
 
-            this.container.find('input[name=daterangepicker_start]').val(this.startDate.format(!this.locale.inputFormat ? this.locale.format : this.locale.inputFormat));
+            if (this.startDate) {
+                const format = this.locale.inputFormat ? this.locale.inputFormat : this.locale.format;
+                const startDate = this.startDate.format(format);
+                this.container.find('input[name=daterangepicker_start]').val(startDate);
+            }
+
             if (this.endDate)
                 this.container.find('input[name=daterangepicker_end]').val(this.endDate.format(!this.locale.inputFormat ? this.locale.format : this.locale.inputFormat));
 
-            if (this.singleDatePicker || (this.endDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate)))) {
+            if (
+                this.singleDatePicker
+                || this.viewType === 'months'
+                || (
+                    this.endDate && this.startDate
+                    && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate))
+                )
+            ) {
                 this.container.find('button.applyBtn').removeAttr('disabled');
             } else {
                 this.container.find('button.applyBtn').attr('disabled', 'disabled');
@@ -1245,8 +1277,12 @@
 
             //incomplete date selection, revert to last values
             if (!this.endDate) {
-                this.startDate = this.oldStartDate.clone();
-                this.endDate = this.oldEndDate.clone();
+                if (this.oldStartDate) {
+                    this.startDate = this.oldStartDate.clone();
+                }
+                if (this.oldEndDate) {
+                    this.endDate = this.oldEndDate.clone();
+                }
             }
 
             //if a new date range was selected, invoke the user callback function
@@ -1456,7 +1492,7 @@
             // * if one of the inputs above the calendars was focused, cancel that manual input
             //
 
-            if (this.endDate || date.isBefore(this.startDate, 'day')) { //picking start
+            if (this.endDate || !this.startDate || date.isBefore(this.startDate, 'day')) { //picking start
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
@@ -1858,9 +1894,10 @@
             this.showMonthlyRanger();
             this.hideDailyRangeCalendar();
             this.renderRanges(this.monthyCalendarOptions.ranges, 'months');
+            this.container.find('button.applyBtn').removeAttr('disabled');
 
             this.setSwitcherButtonClasses();
-            if (!this.endDate) {
+            if (!this.endDate && this.oldEndDate) {
                 this.endDate = this.oldEndDate.clone()
             }
         },
