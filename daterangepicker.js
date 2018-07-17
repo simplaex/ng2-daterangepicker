@@ -639,12 +639,6 @@
         },
 
         updateMonthsInView: function () {
-            if (this.maxDate && this.granularity === 'months') {
-                this.rightCalendar.month = this.maxDate.clone().date(2);
-                this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month');
-                return;
-            }
-
             if (this.endDate) {
                 //if both dates are visible already, do nothing
                 if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month &&
