@@ -639,9 +639,18 @@
         },
 
         updateMonthsInView: function () {
+            if (this.maxDate && this.granularity === 'months') {
+                this.rightCalendar.month = this.maxDate.clone().date(2);
+                this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month');
+                return;
+            }
+
             if (this.endDate) {
                 //if both dates are visible already, do nothing
-                if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month &&
+                if (
+                    !this.singleDatePicker
+                    && this.leftCAlendar && this.leftCalendar.month
+                    && this.rightCalendar && this.righltCalendar.month &&
                     (this.startDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.startDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
                     &&
                     (this.endDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.endDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
@@ -1191,7 +1200,7 @@
                 this.container.css({
                     top: containerTop,
                     left: this.element.offset().left - parentOffset.left + this.element.outerWidth() / 2
-                    - this.container.outerWidth() / 2,
+                        - this.container.outerWidth() / 2,
                     right: 'auto'
                 });
                 if (this.container.offset().left < 0) {
@@ -1218,9 +1227,14 @@
         show: function (e) {
             if (this.isShowing) return;
 
+            this.viewType = this.granularity;
+
             if (this.viewType === 'months') {
                 this.hideDailyRangeCalendar();
                 this.showMonthlyRanger();
+            } else {
+                this.hideMonthlyRanger();
+                this.showDailyRangeCalendar();
             }
 
             // Create a click proxy that is private to this instance of datepicker, for unbinding
@@ -1280,7 +1294,12 @@
             }
 
             //if a new date range was selected, invoke the user callback function
-            if (this.viewType === 'days' && (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))) {
+            if (
+                this.viewType === 'days'
+                && this.startDate
+                && this.endDate
+                && (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
+            ) {
                 this.callback({
                     start: this.startDate,
                     end: this.endDate,
@@ -1288,7 +1307,6 @@
                     granularity: this.viewType
                 });
             }
-
 
             if (!this.endMonth) {
                 this.startMonth = this.oldStartMonth.clone();
