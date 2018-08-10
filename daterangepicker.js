@@ -1236,6 +1236,7 @@
                 this.hideMonthlyRanger();
                 this.showDailyRangeCalendar();
             }
+            this.setSwitcherButtonClasses();
 
             // Create a click proxy that is private to this instance of datepicker, for unbinding
             this._outsideClickProxy = $.proxy(function (e) {
