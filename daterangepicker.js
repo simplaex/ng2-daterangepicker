@@ -1920,10 +1920,14 @@
             var monthsButton = this.container.find('.switch-view.show-months');
 
             if (this.viewType === 'days') {
-                monthsButton.removeAttr('hidden');
+                if (this.enableMonthsView) {
+                    monthsButton.removeAttr('hidden');
+                }
                 daysButton.attr('hidden', true);
             } else {
-                daysButton.removeAttr('hidden');
+                if (this.enableDaysView) {
+                    daysButton.removeAttr('hidden');
+                }
                 monthsButton.attr('hidden', true);
             }
         },
