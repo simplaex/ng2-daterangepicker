@@ -563,7 +563,9 @@
             this.ranges = $.extend(true, {}, ranges);
             rangesContainer.removeAttr('hidden').html('');
 
-            for (range in ranges) {
+            let start;
+            let end;
+            for (let range in ranges) {
                 if (typeof ranges[range][0] === 'string')
                     start = moment(ranges[range][0], this.locale.format);
                 else
@@ -603,7 +605,7 @@
             }
 
             var list = '<ul>';
-            for (range in this.ranges) {
+            for (let range in this.ranges) {
                 list += '<li data-range-key="' + range + '">' + range + '</li>';
             }
 
