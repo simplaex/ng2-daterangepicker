@@ -267,8 +267,9 @@
 
         if (typeof options.singleDatePicker === 'boolean') {
             this.singleDatePicker = options.singleDatePicker;
-            if (this.singleDatePicker)
+            if (this.singleDatePicker && this.startDate) {
                 this.endDate = this.startDate.clone();
+            }
         }
 
         if (typeof options.showSingleCalendar === 'boolean')
@@ -480,17 +481,21 @@
                 return;
             }
 
-            if (typeof startDate === 'string')
+            if (typeof startDate === 'string') {
                 this.startDate = moment(startDate, this.locale.format);
+            }
 
-            if (typeof startDate === 'object')
+            if (typeof startDate === 'object') {
                 this.startDate = moment(startDate);
+            }
 
-            if (!this.timePicker)
+            if (!this.timePicker) {
                 this.startDate = this.startDate.startOf('day');
+            }
 
-            if (this.timePicker && this.timePickerIncrement)
+            if (this.timePicker && this.timePickerIncrement) {
                 this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+            }
 
             if (this.minDate && this.startDate.isBefore(this.minDate)) {
                 this.startDate = this.minDate.clone();
@@ -504,8 +509,9 @@
                     this.startDate.minute(Math.floor(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
             }
 
-            if (!this.isShowing)
+            if (!this.isShowing) {
                 this.updateElement();
+            }
 
             this.updateMonthsInView();
         },
@@ -515,31 +521,39 @@
                 return;
             }
 
-            if (typeof endDate === 'string')
+            if (typeof endDate === 'string') {
                 this.endDate = moment(endDate, this.locale.format);
+            }
 
-            if (typeof endDate === 'object')
+            if (typeof endDate === 'object') {
                 this.endDate = moment(endDate);
+            }
 
-            if (!this.timePicker)
+            if (!this.timePicker) {
                 this.endDate = this.endDate.endOf('day');
+            }
 
-            if (this.timePicker && this.timePickerIncrement)
+            if (this.timePicker && this.timePickerIncrement) {
                 this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+            }
 
-            if (this.endDate.isBefore(this.startDate))
+            if (this.endDate.isBefore(this.startDate)) {
                 this.endDate = this.startDate.clone();
+            }
 
-            if (this.maxDate && this.endDate.isAfter(this.maxDate))
+            if (this.maxDate && this.endDate.isAfter(this.maxDate)) {
                 this.endDate = this.maxDate.clone();
+            }
 
-            if (this.dateLimit && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate))
+            if (this.dateLimit && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate)) {
                 this.endDate = this.startDate.clone().add(this.dateLimit);
+            }
 
             this.previousRightTime = this.endDate.clone();
 
-            if (!this.isShowing)
+            if (!this.isShowing) {
                 this.updateElement();
+            }
 
             this.updateMonthsInView();
         },
@@ -647,7 +661,7 @@
                 return;
             }
 
-            if (this.endDate) {
+            if (this.endDate && this.startDate) {
                 //if both dates are visible already, do nothing
                 if (
                     !this.singleDatePicker
