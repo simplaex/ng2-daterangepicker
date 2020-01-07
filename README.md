@@ -250,6 +250,9 @@ export class AppComponent {
 }
 ```
 
+### Build the lib
+Run `npm run ngc-build`
+
 Below is the link to the original project, there's more info regarding the daterangepicker there. http://www.daterangepicker.com/
 
 > **Note:**
