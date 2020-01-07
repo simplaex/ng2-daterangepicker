@@ -87,9 +87,26 @@ export class DaterangePickerComponent implements AfterViewInit, OnDestroy, DoChe
         if (optionsChanged || settingsChanged) {
             this.render();
             this.attachEvents();
-            if (this.activeRange && this.datePicker) {
-                this.datePicker.setStartDate(this.activeRange.start);
-                this.datePicker.setEndDate(this.activeRange.end);
+            let startDateToApply;
+            let endDateToApply;
+
+            if (this.activeRange) {
+                startDateToApply = this.activeRange.start;
+                endDateToApply = this.activeRange.end;
+            }
+
+            if (optionsChanged._records) {
+                if (optionsChanged._records.get('startDate')) {
+                    startDateToApply = optionsChanged._records.get('startDate').currentValue;
+                }
+                if (optionsChanged._records.get('endDate')) {
+                    endDateToApply = optionsChanged._records.get('endDate').currentValue;
+                }
+            }
+
+            if (startDateToApply && endDateToApply && this.datePicker) {
+                this.datePicker.setStartDate(startDateToApply);
+                this.datePicker.setEndDate(endDateToApply);
             }
         }
     }
