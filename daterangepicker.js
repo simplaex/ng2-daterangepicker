@@ -101,6 +101,18 @@
         this.leftCalendar = {};
         this.rightCalendar = {};
 
+        // offset (timezone) checks
+        const referenceUtcOffset = options.startDate.utcOffset();
+        if (
+            this.endDate.utcOffset() === referenceUtcOffset &&
+            this.dailyCalendar.minDate.utcOffset() === referenceUtcOffset &&
+            this.monthlyCalendar.minDate.utcOffset() === referenceUtcOffset &&
+            this.endmaxDateDate.utcOffset() === referenceUtcOffset
+        ) {
+            this.timezoneOffset = referenceUtcOffset;
+        }
+        else { return; }
+
         //custom options from user
         if (typeof options !== 'object' || options === null)
             options = {};
@@ -215,22 +227,22 @@
 
         if (options.dailyCalendar) {
             if (options.granularity === 'days') {
-                this.startDate = options.startDate ? moment(options.startDate) : null;
-                this.endDate = options.endDate ? moment(options.endDate) : null;
+                this.startDate = options.startDate ? moment(options.startDate).utc().utcOffset(this.timezoneOffset) : null;
+                this.endDate = options.endDate ? moment(options.endDate).utc().utcOffset(this.timezoneOffset) : null;
             }
-            this.minDate = options.dailyCalendar.minDate ? moment(options.dailyCalendar.minDate) : null;
+            this.minDate = options.dailyCalendar.minDate ? moment(options.dailyCalendar.minDate).utc().utcOffset(this.timezoneOffset) : null;
             this.dailyCalendarOptions = options.dailyCalendar;
         }
 
         if (options.monthlyCalendar) {
-            this.startMonth = options.startDate ? moment(options.startDate) : null;
-            this.endMonth = options.endDate ? moment(options.endDate) : null;
-            this.minMonth = options.monthlyCalendar.minDate ? moment(options.monthlyCalendar.minDate) : null;
+            this.startMonth = options.startDate ? moment(options.startDate).utc().utcOffset(this.timezoneOffset) : null;
+            this.endMonth = options.endDate ? moment(options.endDate).utc().utcOffset(this.timezoneOffset) : null;
+            this.minMonth = options.monthlyCalendar.minDate ? moment(options.monthlyCalendar.minDate).utc().utcOffset(this.timezoneOffset) : null;
             this.monthyCalendarOptions = options.monthlyCalendar;
         }
 
         if (typeof options.maxDate === 'object')
-            this.maxDate = moment(options.maxDate);
+            this.maxDate = moment(options.maxDate).utc().utcOffset(this.timezoneOffset);
 
         if (typeof options.applyClass === 'string')
             this.applyClass = options.applyClass;
@@ -325,11 +337,11 @@
                 start = end = null;
 
                 if (split.length == 2) {
-                    start = moment(split[0], this.locale.format);
-                    end = moment(split[1], this.locale.format);
+                    start = moment(split[0], this.locale.format).utc().utcOffset(this.timezoneOffset);
+                    end = moment(split[1], this.locale.format).utc().utcOffset(this.timezoneOffset);
                 } else if (this.singleDatePicker && val !== "") {
-                    start = moment(val, this.locale.format);
-                    end = moment(val, this.locale.format);
+                    start = moment(val, this.locale.format).utc().utcOffset(this.timezoneOffset);
+                    end = moment(val, this.locale.format).utc().utcOffset(this.timezoneOffset);
                 }
                 if (start !== null && end !== null) {
                     this.setStartDate(start);
@@ -482,11 +494,11 @@
             }
 
             if (typeof startDate === 'string') {
-                this.startDate = moment(startDate, this.locale.format);
+                this.startDate = moment(startDate, this.locale.format).utc().utcOffset(this.timezoneOffset);
             }
 
             if (typeof startDate === 'object') {
-                this.startDate = moment(startDate);
+                this.startDate = moment(startDate).utc().utcOffset(this.timezoneOffset);
             }
 
             if (!this.timePicker) {
@@ -522,11 +534,11 @@
             }
 
             if (typeof endDate === 'string') {
-                this.endDate = moment(endDate, this.locale.format);
+                this.endDate = moment(endDate, this.locale.format).utc().utcOffset(this.timezoneOffset);
             }
 
             if (typeof endDate === 'object') {
-                this.endDate = moment(endDate);
+                this.endDate = moment(endDate).utc().utcOffset(this.timezoneOffset);
             }
 
             if (!this.timePicker) {
@@ -581,12 +593,12 @@
             let end;
             for (let range in ranges) {
                 if (typeof ranges[range][0] === 'string')
-                    start = moment(ranges[range][0], this.locale.format);
+                    start = moment(ranges[range][0], this.locale.format).utc().utcOffset(this.timezoneOffset);
                 else
                     start = ranges[range][0];
 
                 if (typeof ranges[range][1] === 'string')
-                    end = moment(ranges[range][1], this.locale.format);
+                    end = moment(ranges[range][1], this.locale.format).utc().utcOffset(this.timezoneOffset);
                 else
                     end = ranges[range][1];
 
@@ -763,12 +775,12 @@
             var hour = calendar.month.hour();
             var minute = calendar.month.minute();
             var second = calendar.month.second();
-            var daysInMonth = moment([year, month]).daysInMonth();
-            var firstDay = moment([year, month, 1]);
-            var lastDay = moment([year, month, daysInMonth]);
-            var lastMonth = moment(firstDay).subtract(1, 'month').month();
-            var lastYear = moment(firstDay).subtract(1, 'month').year();
-            var daysInLastMonth = moment([lastYear, lastMonth]).daysInMonth();
+            var daysInMonth = moment([year, month]).utc().utcOffset(this.timezoneOffset).daysInMonth();
+            var firstDay = moment([year, month, 1]).utc().utcOffset(this.timezoneOffset);
+            var lastDay = moment([year, month, daysInMonth]).utc().utcOffset(this.timezoneOffset);
+            var lastMonth = moment(firstDay).utc().utcOffset(this.timezoneOffset).subtract(1, 'month').month();
+            var lastYear = moment(firstDay).utc().utcOffset(this.timezoneOffset).subtract(1, 'month').year();
+            var daysInLastMonth = moment([lastYear, lastMonth]).utc().utcOffset(this.timezoneOffset).daysInMonth();
             var dayOfWeek = firstDay.day();
 
             //initialize a 6 rows x 7 columns array for the calendar
@@ -788,10 +800,10 @@
             if (dayOfWeek == this.locale.firstDay)
                 startDay = daysInLastMonth - 6;
 
-            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]);
+            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]).utc().utcOffset(this.timezoneOffset);
 
             var col, row;
-            for (var i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
+            for (var i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).utc().utcOffset(this.timezoneOffset).add(24, 'hour')) {
                 if (i > 0 && col % 7 === 0) {
                     col = 0;
                     row++;
@@ -922,7 +934,7 @@
                     var classes = [];
 
                     //highlight today's date
-                    if (calendar[row][col].isSame(new Date(), "day"))
+                    if (calendar[row][col].isSame(moment.utc().utcOffset(this.timezoneOffset), "day"))
                         classes.push('today');
 
                     //highlight weekends
@@ -957,7 +969,7 @@
                         //highlight dates in-between the selected dates
                         if (
                             this.endDate != null
-                            && moment(calendar[row][col].format('YYYY-MM-DD')).isBetween(this.startDate.format('YYYY-MM-DD'), this.endDate.format('YYYY-MM-DD'), 'day', '[]')
+                            && moment(calendar[row][col].format('YYYY-MM-DD')).utc().utcOffset(this.timezoneOffset).isBetween(this.startDate.format('YYYY-MM-DD'), this.endDate.format('YYYY-MM-DD'), 'day', '[]')
                         ) {
                             classes.push('in-range');
                         }
@@ -1728,8 +1740,8 @@
 
         formInputsChanged: function (e) {
             var isRight = $(e.target).closest('.calendar').hasClass('right');
-            var start = moment(this.container.find('input[name="daterangepicker_start"]').val(), !this.locale.inputFormat ? this.locale.format : this.locale.inputFormat);
-            var end = moment(this.container.find('input[name="daterangepicker_end"]').val(), !this.locale.inputFormat ? this.locale.format : this.locale.inputFormat);
+            var start = moment(this.container.find('input[name="daterangepicker_start"]').val(), !this.locale.inputFormat ? this.locale.format : this.locale.inputFormat).utc().utcOffset(this.timezoneOffset);
+            var end = moment(this.container.find('input[name="daterangepicker_end"]').val(), !this.locale.inputFormat ? this.locale.format : this.locale.inputFormat).utc().utcOffset(this.timezoneOffset);
 
             if (start.isValid() && end.isValid()) {
 
@@ -1778,7 +1790,7 @@
 
             if (!this.endDate) {
                 var val = this.container.find('input[name="daterangepicker_end"]').val();
-                var end = moment(val, this.locale.format);
+                var end = moment(val, this.locale.format).utc().utcOffset(this.timezoneOffset);
                 if (end.isValid()) {
                     this.setEndDate(end);
                     this.updateView();
@@ -1797,12 +1809,12 @@
                 end = null;
 
             if (dateString.length === 2) {
-                start = moment(dateString[0], this.locale.format);
-                end = moment(dateString[1], this.locale.format);
+                start = moment(dateString[0], this.locale.format).utc().utcOffset(this.timezoneOffset);
+                end = moment(dateString[1], this.locale.format).utc().utcOffset(this.timezoneOffset);
             }
 
             if (this.singleDatePicker || start === null || end === null) {
-                start = moment(this.element.val(), this.locale.format);
+                start = moment(this.element.val(), this.locale.format).utc().utcOffset(this.timezoneOffset);
                 end = start;
             }
 
@@ -1846,8 +1858,8 @@
             var html = '';
 
             if (this.monthsToRender === 1) {
-                var date = moment().utc().startOf('month'),
-                    label = moment().format('MMMM YYYY');
+                var date = moment().utc().utcOffset(this.timezoneOffset).startOf('month'),
+                    label = moment().utc().utcOffset(this.timezoneOffset).format('MMMM YYYY');
 
                 html += '<div class="month-tile start-range end-range active" data-month="' + date.format() + '">' + label + '</div>';
 
@@ -1855,8 +1867,8 @@
                 this.endMonth = date.clone();
             } else {
                 for (var monthTile = this.monthsToRender; monthTile > 0; monthTile--) {
-                    var date = moment().subtract(monthTile - 1, 'months').startOf('month'),
-                        label = moment().subtract(monthTile - 1, 'months').format('MMMM YYYY'),
+                    var date = moment().utc().utcOffset(this.timezoneOffset).subtract(monthTile - 1, 'months').startOf('month'),
+                        label = moment().utc().utcOffset(this.timezoneOffset).subtract(monthTile - 1, 'months').format('MMMM YYYY'),
                         classNames = ['month-tile'],
                         endMonthWithOffset;
 
@@ -1952,7 +1964,7 @@
             if (this.monthsToRender <= 1)
                 return;
 
-            var selectedDate = moment($(e.target).attr('data-month'));
+            var selectedDate = moment($(e.target).attr('data-month')).utc().utcOffset(this.timezoneOffset);
             if (this.endMonth || selectedDate.isBefore(this.startMonth)) {
                 //picking start
                 this.endMonth = null;
@@ -1972,14 +1984,14 @@
             if (!!this.endMonth || this.monthsToRender <= 1)
                 return;
 
-            var date = moment($(e.target).attr('data-month'));
+            var date = moment($(e.target).attr('data-month')).utc().utcOffset(this.timezoneOffset);
             var startMonth = this.startMonth;
 
             if (!this.endMonth) {
                 this.container
                     .find('.rvr-daterange-picker__month-picker .month-tile')
                     .each(function (index, el) {
-                        var dt = moment($(el).attr('data-month')).startOf('month');
+                        var dt = moment($(el).utc().utcOffset(this.timezoneOffset).attr('data-month')).startOf('month');
                         if ((dt.isAfter(startMonth) && dt.isBefore(date)) || dt.isSame(date, 'day')) {
                             $(el).addClass('in-range');
                         } else {
@@ -1991,7 +2003,7 @@
 
         // TODO
         setEndMonth: function (endDate) {
-            var maxMonthToSelect = moment().startOf( 'month' );
+            var maxMonthToSelect = moment().utc().utcOffset(this.timezoneOffset).startOf( 'month' );
             this.endMonth = endDate;
 
             if ( this.endMonth.isSameOrAfter( maxMonthToSelect, 'month' ) ) {
@@ -2004,7 +2016,7 @@
         },
 
         setStartMonth: function (startDate) {
-            var minMonthToSelect = moment().startOf( 'month' );
+            var minMonthToSelect = moment().utc().utcOffset(this.timezoneOffset).startOf( 'month' );
             this.startMonth = startDate;
 
             if ( this.startMonth.isAfter( minMonthToSelect ) )
