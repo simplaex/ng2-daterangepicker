@@ -104,10 +104,10 @@
         // offset (timezone) checks
         const referenceUtcOffset = options.startDate.utcOffset();
         if (
-            this.endDate.utcOffset() === referenceUtcOffset &&
-            this.dailyCalendar.minDate.utcOffset() === referenceUtcOffset &&
-            this.monthlyCalendar.minDate.utcOffset() === referenceUtcOffset &&
-            this.endmaxDateDate.utcOffset() === referenceUtcOffset
+            options.endDate.utcOffset() === referenceUtcOffset &&
+            (!options.dailyCalendar || options.dailyCalendar.minDate.utcOffset() === referenceUtcOffset) &&
+            (!options.monthlyCalendar || options.monthlyCalendar.minDate.utcOffset() === referenceUtcOffset) &&
+            options.maxDate.utcOffset() === referenceUtcOffset
         ) {
             this.timezoneOffset = referenceUtcOffset;
         }
