@@ -1333,9 +1333,24 @@
                 && this.endDate
                 && (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
             ) {
+                // resetting timezone offset. otherwise (example run in Berlin with offset -07:00) startDate goes out as:
+                // this.startDate.format(): "2020-04-04T00:00:00-07:00"
+                // and comes back in as:
+                // options.startDate.format(): "2020-04-03T17:00:00-07:00"
+
+                // endDate goes out as:
+                // this.endDate.format(): "2020-04-18T23:59:59-07:00"
+                // and comes back in as:
+                // options.endDate.format(): "2020-04-05T16:59:59-07:00"
+
+                let startDateToEmit = this.startDate.clone();
+                startDateToEmit.utcOffset(0);
+                let endDateToEmit = this.startDate.clone();
+                endDateToEmit.utcOffset(0);
+
                 this.callback({
-                    start: this.startDate,
-                    end: this.endDate,
+                    start: startDateToEmit,
+                    end: endDateToEmit,
                     label: this.chosenLabel,
                     granularity: this.viewType
                 });
