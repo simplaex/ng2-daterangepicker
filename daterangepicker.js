@@ -769,18 +769,22 @@
             // Build the matrix of dates that will populate the calendar
             //
 
+            // These don't need to be created with utc().utcOffset(this.timezoneOffset)
+            // because utc() makes it jump a month back (tested with berlin time)
+            // moment([2020, 3]).month() = 3
+            // moment([2020, 3]).utc().month() = 2
             var calendar = side == 'left' ? this.leftCalendar : this.rightCalendar;
             var month = calendar.month.month();
             var year = calendar.month.year();
             var hour = calendar.month.hour();
             var minute = calendar.month.minute();
             var second = calendar.month.second();
-            var daysInMonth = moment([year, month]).utc().utcOffset(this.timezoneOffset).daysInMonth();
-            var firstDay = moment([year, month, 1]).utc().utcOffset(this.timezoneOffset);
-            var lastDay = moment([year, month, daysInMonth]).utc().utcOffset(this.timezoneOffset);
-            var lastMonth = moment(firstDay).utc().utcOffset(this.timezoneOffset).subtract(1, 'month').month();
-            var lastYear = moment(firstDay).utc().utcOffset(this.timezoneOffset).subtract(1, 'month').year();
-            var daysInLastMonth = moment([lastYear, lastMonth]).utc().utcOffset(this.timezoneOffset).daysInMonth();
+            var daysInMonth = moment([year, month]).daysInMonth();
+            var firstDay = moment([year, month, 1]);
+            var lastDay = moment([year, month, daysInMonth]);
+            var lastMonth = moment(firstDay).subtract(1, 'month').month();
+            var lastYear = moment(firstDay).subtract(1, 'month').year();
+            var daysInLastMonth = moment([lastYear, lastMonth]).daysInMonth();
             var dayOfWeek = firstDay.day();
 
             //initialize a 6 rows x 7 columns array for the calendar
