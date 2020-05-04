@@ -1343,8 +1343,21 @@
                 // and comes back in as:
                 // options.endDate.format(): "2020-04-05T16:59:59-07:00"
 
-                let startDateToEmit = moment([this.startDate.year(), this.startDate.month(), this.startDate.date()]);
-                let endDateToEmit = moment([this.endDate.year(), this.endDate.month(), this.endDate.date()]);
+                let startDateToEmit = moment().utc();
+                startDateToEmit.year(this.startDate.year());
+                startDateToEmit.month(this.startDate.month());
+                startDateToEmit.date(this.startDate.date());
+                startDateToEmit.hour(0);
+                startDateToEmit.minute(0);
+                startDateToEmit.second(0);
+
+                let endDateToEmit = moment().utc();
+                endDateToEmit.year(this.endDate.year());
+                endDateToEmit.month(this.endDate.month());
+                endDateToEmit.date(this.endDate.date());
+                endDateToEmit.hour(0);
+                endDateToEmit.minute(0);
+                endDateToEmit.second(0);
 
                 this.callback({
                     start: startDateToEmit,
