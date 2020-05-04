@@ -1345,7 +1345,7 @@
 
                 let startDateToEmit = this.startDate.clone();
                 startDateToEmit.utcOffset(0);
-                let endDateToEmit = this.startDate.clone();
+                let endDateToEmit = this.endDate.clone();
                 endDateToEmit.utcOffset(0);
 
                 this.callback({
