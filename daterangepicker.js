@@ -101,6 +101,16 @@
         this.leftCalendar = {};
         this.rightCalendar = {};
 
+        // now we force this component to be initiated with startDate, endDate, minDate, maxDate
+        // another solution could be to pass the utcOffset as a separate property and allow undefined
+        // startDate, endDate, minDate, maxDate
+        if (
+            !options.startDate ||
+            !options.endDate ||
+            !options.dailyCalendar || !options.dailyCalendar.minDate ||
+            !options.monthlyCalendar || !options.monthlyCalendar.minDate
+        ) { return; }
+
         // offset (timezone) checks
         const referenceUtcOffset = options.startDate.utcOffset();
         if (
