@@ -102,11 +102,7 @@
         this.rightCalendar = {};
 
         // offset (timezone) checks
-        console.log('daterangepicker.js options.startDate a', options.startDate.format());
-        console.log('daterangepicker.js endDate.startDate a', options.endDate.format());
         const referenceUtcOffset = options.startDate.utcOffset();
-        console.log('daterangepicker.js options.startDate b', options.startDate.format());
-        console.log('daterangepicker.js endDate.startDate b', options.endDate.format());
         if (
             options.endDate.utcOffset() === referenceUtcOffset &&
             (!options.dailyCalendar || options.dailyCalendar.minDate.utcOffset() === referenceUtcOffset) &&
