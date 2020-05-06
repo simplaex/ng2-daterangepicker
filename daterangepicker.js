@@ -1883,9 +1883,9 @@
         },
 
         remove: function () {
-            this.container.remove();
-            this.element.off('.daterangepicker');
-            this.element.removeData();
+            this.container && this.container.remove();
+            this.element && this.element.off('.daterangepicker');
+            this.element && this.element.removeData();
         },
 
         // new custom logic for selecting monthly range
